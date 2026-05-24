@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Strategic Networking CRM — Atul Raj Prasad</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0e0f11;
+  --bg2:#141518;
+  --bg3:#1a1c20;
+  --bg4:#22252b;
+  --bg5:#2a2d34;
+  --border:#2e3138;
+  --border2:#3a3f48;
+  --text:#e8eaed;
+  --text2:#9aa0ab;
+  --text3:#5a6070;
+  --accent:#c8a96e;
+  --accent2:#d4b97e;
+  --accent-dim:#2a2318;
+  --green:#4caf7d;
+  --green-dim:#162a1f;
+  --blue:#5b9bd5;
+  --blue-dim:#162130;
+  --red:#e05c5c;
+  --red-dim:#2a1515;
+  --amber:#e09f3e;
+  --amber-dim:#2a2010;
+  --radius:8px;
+  --radius-lg:12px;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.5}
+a{color:var(--accent);text-decoration:none}
+a:hover{color:var(--accent2)}
+
+/* LAYOUT */
+#app{display:flex;height:100vh;overflow:hidden}
+#sidebar{width:220px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;position:relative}
+#topbar{height:56px;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:12px;flex-shrink:0;background:var(--bg2)}
+#content{flex:1;overflow-y:auto;padding:32px;background:var(--bg)}
+
+/* SIDEBAR */
+.sb-header{padding:20px 18px 16px;border-bottom:1px solid var(--border)}
+.sb-logo{display:flex;align-items:center;gap:10px;margin-bottom:2px}
+.sb-logo-icon{width:28px;height:28px;background:var(--accent);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#0e0f11;flex-shrink:0}
+.sb-title{font-size:12px;font-weight:500;color:var(--text);line-height:1.3}
+.sb-sub{font-size:11px;color:var(--text3);margin-top:3px}
+.sb-section{padding:20px 0 4px}
+.sb-label{font-size:10px;font-weight:500;color:var(--text3);padding:0 18px 6px;text-transform:uppercase;letter-spacing:0.08em}
+.sb-item{display:flex;align-items:center;gap:9px;padding:7px 18px;font-size:13px;color:var(--text2);cursor:pointer;border:none;background:none;width:100%;text-align:left;transition:all 0.15s;border-left:2px solid transparent}
+.sb-item:hover{color:var(--text);background:var(--bg3)}
+.sb-item.active{color:var(--accent);background:var(--accent-dim);border-left-color:var(--accent);font-weight:500}
+.sb-item svg{width:15px;height:15px;flex-shrink:0;opacity:0.7}
+.sb-item.active svg{opacity:1}
+.sb-badge{margin-left:auto;font-size:10px;background:var(--bg4);color:var(--text3);padding:1px 7px;border-radius:10px;font-family:'DM Mono',monospace}
+.sb-item.active .sb-badge{background:var(--accent-dim);color:var(--accent)}
+.sb-footer{margin-top:auto;padding:16px 18px;border-top:1px solid var(--border)}
+.sb-footer-text{font-size:11px;color:var(--text3);line-height:1.5}
+
+/* TOPBAR */
+#page-title{font-size:15px;font-weight:500;color:var(--text);flex:1}
+.tb-btn{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);padding:6px 12px;border:1px solid var(--border2);border-radius:var(--radius);cursor:pointer;background:var(--bg3);transition:all 0.15s;white-space:nowrap}
+.tb-btn:hover{color:var(--text);border-color:var(--border2);background:var(--bg4)}
+.tb-btn svg{width:14px;height:14px}
+.tb-primary{background:var(--accent);color:#0e0f11;border-color:var(--accent);font-weight:500}
+.tb-primary:hover{background:var(--accent2);border-color:var(--accent2);color:#0e0f11}
+
+/* PAGES */
+.page{display:none}.page.active{display:block}
+
+/* DASHBOARD */
+.dash-hero{margin-bottom:32px}
+.dash-eyebrow{font-size:11px;color:var(--accent);text-transform:uppercase;letter-spacing:0.1em;font-weight:500;margin-bottom:8px}
+.dash-title{font-size:28px;font-weight:300;color:var(--text);letter-spacing:-0.02em;line-height:1.2;margin-bottom:8px}
+.dash-title strong{font-weight:500}
+.dash-sub{font-size:13px;color:var(--text3);font-style:italic}
+
+.metrics-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px}
+.metric{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;cursor:pointer;transition:border-color 0.15s}
+.metric:hover{border-color:var(--border2)}
+.metric-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px}
+.metric-val{font-size:30px;font-weight:300;color:var(--text);letter-spacing:-0.02em;font-family:'DM Mono',monospace}
+.metric-sub{font-size:11px;color:var(--text3);margin-top:4px}
+.metric-accent .metric-val{color:var(--accent)}
+
+.qa-section{margin-bottom:28px}
+.section-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;font-weight:500;margin-bottom:12px}
+.qa-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.qa-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;cursor:pointer;transition:all 0.15s;text-align:left}
+.qa-card:hover{border-color:var(--accent);background:var(--bg3)}
+.qa-card:hover .qa-icon{color:var(--accent)}
+.qa-icon{font-size:20px;margin-bottom:10px;color:var(--text3);transition:color 0.15s;line-height:1}
+.qa-name{font-size:13px;font-weight:500;color:var(--text);margin-bottom:3px}
+.qa-desc{font-size:11px;color:var(--text3)}
+
+.dash-two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.dash-panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
+.dash-panel-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.dash-panel-title{font-size:12px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:0.06em}
+.dash-panel-link{font-size:11px;color:var(--accent);cursor:pointer}
+.dash-panel-link:hover{color:var(--accent2)}
+.dash-panel-body{padding:8px 0}
+.dash-row{display:flex;align-items:center;gap:12px;padding:9px 18px;cursor:pointer;transition:background 0.1s}
+.dash-row:hover{background:var(--bg3)}
+.avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;letter-spacing:0.02em}
+.dash-row-name{font-size:13px;font-weight:500;color:var(--text);margin-bottom:1px}
+.dash-row-sub{font-size:11px;color:var(--text3)}
+.dash-row-right{margin-left:auto;display:flex;align-items:center;gap:6px}
+
+/* PILLS */
+.pill{display:inline-flex;align-items:center;font-size:10px;font-weight:500;padding:2px 8px;border-radius:10px;white-space:nowrap;letter-spacing:0.02em}
+.pill-high{background:var(--amber-dim);color:var(--amber)}
+.pill-medium{background:var(--blue-dim);color:var(--blue)}
+.pill-low{background:var(--bg4);color:var(--text3)}
+.pill-connected{background:var(--green-dim);color:var(--green)}
+.pill-following{background:var(--blue-dim);color:var(--blue)}
+.pill-replied{background:var(--green-dim);color:var(--green)}
+.pill-pending{background:var(--amber-dim);color:var(--amber)}
+.pill-noresp{background:var(--bg4);color:var(--text3)}
+.pill-notconn{background:var(--red-dim);color:var(--red)}
+.pill-strong{background:var(--accent-dim);color:var(--accent)}
+.pill-fureq{background:var(--red-dim);color:var(--red)}
+
+/* TABLE */
+.page-header{margin-bottom:24px}
+.page-header h2{font-size:22px;font-weight:300;color:var(--text);letter-spacing:-0.01em}
+.page-header p{font-size:13px;color:var(--text3);margin-top:4px}
+
+.toolbar{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.search-wrap{position:relative;flex:1}
+.search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none;width:14px;height:14px}
+.search-input{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:8px 12px 8px 34px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:border-color 0.15s}
+.search-input:focus{border-color:var(--border2)}
+.search-input::placeholder{color:var(--text3)}
+.filter-select{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:7px 10px;font-size:12px;color:var(--text2);font-family:'DM Sans',sans-serif;outline:none;cursor:pointer}
+.filter-select:focus{border-color:var(--border2)}
+
+.view-tabs{display:flex;gap:0;margin-bottom:16px;border-bottom:1px solid var(--border)}
+.vtab{font-size:12px;color:var(--text3);padding:7px 14px;border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color 0.15s;font-family:'DM Sans',sans-serif}
+.vtab:hover{color:var(--text2)}
+.vtab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:500}
+
+.crm-table{width:100%;border-collapse:collapse}
+.crm-table th{text-align:left;padding:9px 12px;font-size:10px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;border-bottom:1px solid var(--border);white-space:nowrap;background:var(--bg2)}
+.crm-table td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text2);font-size:13px;vertical-align:middle}
+.crm-table tr:hover td{background:var(--bg3);cursor:pointer}
+.crm-table td:first-child{color:var(--text);font-weight:500}
+.table-wrap{border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
+.table-scroll{overflow-x:auto}
+
+/* FORM */
+.form-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;max-width:780px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-group.full{grid-column:1/-1}
+.form-label{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em}
+.form-input,.form-select,.form-textarea{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:9px 12px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:border-color 0.15s;width:100%}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--accent)}
+.form-input::placeholder,.form-textarea::placeholder{color:var(--text3)}
+.form-textarea{resize:vertical;min-height:72px}
+.form-section-sep{grid-column:1/-1;border:none;border-top:1px solid var(--border);margin:4px 0}
+.form-section-title{grid-column:1/-1;font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;font-weight:500;padding-top:4px}
+.form-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:24px}
+
+/* TEMPLATES */
+.tmpl-item{border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:10px}
+.tmpl-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:var(--bg2);cursor:pointer;transition:background 0.15s}
+.tmpl-header:hover{background:var(--bg3)}
+.tmpl-header-left{display:flex;align-items:center;gap:12px}
+.tmpl-title{font-size:13px;font-weight:500;color:var(--text)}
+.tmpl-body{display:none;padding:20px 18px;background:var(--bg);border-top:1px solid var(--border)}
+.tmpl-body.open{display:block}
+.tmpl-text{font-size:13px;color:var(--text2);line-height:1.7;white-space:pre-wrap;font-family:'DM Sans',sans-serif;margin-bottom:14px}
+.tmpl-chevron{transition:transform 0.15s;color:var(--text3)}
+.tmpl-header.open .tmpl-chevron{transform:rotate(180deg)}
+
+/* INSIGHTS */
+.insights-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+.insight-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
+.insight-card-header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.insight-card-title{font-size:11px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:0.06em}
+.insight-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.insight-entries{padding:4px 0}
+.insight-entry{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;padding:9px 16px;border-bottom:1px solid var(--border);transition:background 0.1s}
+.insight-entry:last-child{border-bottom:none}
+.insight-entry:hover{background:var(--bg3)}
+.insight-entry-text{font-size:13px;color:var(--text2);line-height:1.5;flex:1}
+.insight-rm{background:none;border:none;color:var(--text3);cursor:pointer;font-size:11px;flex-shrink:0;padding:2px 4px;opacity:0;transition:opacity 0.15s}
+.insight-entry:hover .insight-rm{opacity:1}
+.insight-add-row{padding:10px 16px;border-top:1px solid var(--border);background:var(--bg)}
+.insight-add-input-row{display:flex;align-items:center;gap:8px}
+
+/* COMPANIES */
+.company-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.co-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;cursor:pointer;transition:border-color 0.15s}
+.co-card:hover{border-color:var(--border2)}
+.co-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px}
+.co-name{font-size:14px;font-weight:500;color:var(--text);line-height:1.3}
+.co-role{font-size:12px;color:var(--text3);margin-bottom:10px}
+.co-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.co-why{font-size:12px;color:var(--text3);line-height:1.5;border-top:1px solid var(--border);padding-top:8px;margin-top:8px}
+
+/* CALENDAR */
+.cal-nav{display:flex;align-items:center;gap:14px;margin-bottom:20px}
+.cal-month{font-size:18px;font-weight:400;color:var(--text)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.cal-day-label{font-size:10px;color:var(--text3);text-align:center;padding:4px 0;text-transform:uppercase;letter-spacing:0.05em;font-weight:500}
+.cal-cell{min-height:80px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:7px 8px;transition:border-color 0.15s}
+.cal-cell.today{border-color:var(--accent)}
+.cal-cell.other{opacity:0.3}
+.cal-num{font-size:11px;color:var(--text3);margin-bottom:4px;font-family:'DM Mono',monospace}
+.cal-cell.today .cal-num{color:var(--accent);font-weight:500}
+.cal-event{font-size:10px;background:var(--blue-dim);color:var(--blue);padding:2px 6px;border-radius:4px;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer}
+
+/* DETAIL PANEL */
+#detail{position:absolute;top:0;right:0;width:360px;height:100%;background:var(--bg2);border-left:1px solid var(--border);z-index:20;display:none;flex-direction:column;overflow-y:auto}
+#detail.open{display:flex}
+.detail-inner{padding:24px}
+.detail-close-btn{position:absolute;top:16px;right:16px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text3);transition:all 0.15s}
+.detail-close-btn:hover{color:var(--text);border-color:var(--border2)}
+.d-avatar{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;margin-bottom:14px;letter-spacing:0.03em}
+.d-name{font-size:18px;font-weight:500;color:var(--text);margin-bottom:2px}
+.d-role{font-size:13px;color:var(--text3);margin-bottom:14px}
+.d-pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
+.d-sep{border:none;border-top:1px solid var(--border);margin:14px 0}
+.d-field{margin-bottom:12px}
+.d-field-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px}
+.d-field-val{font-size:13px;color:var(--text2);line-height:1.5}
+.d-actions{display:flex;gap:8px;margin-top:18px}
+
+/* EMPTY */
+.empty{text-align:center;padding:50px 20px;color:var(--text3)}
+.empty-icon{font-size:36px;margin-bottom:10px;opacity:0.4}
+.empty-text{font-size:13px}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--bg5)}
+
+/* TOAST */
+#toast{position:fixed;bottom:24px;right:24px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:12px 18px;font-size:13px;color:var(--text);display:none;z-index:100;animation:fadeIn 0.2s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <!-- SIDEBAR -->
+  <nav id="sidebar">
+    <div class="sb-header">
+      <div class="sb-logo">
+        <div class="sb-logo-icon">A</div>
+        <div>
+          <div class="sb-title">Networking CRM</div>
+          <div class="sb-sub">Atul Raj Prasad</div>
+        </div>
+      </div>
+    </div>
+    <div class="sb-section">
+      <div class="sb-label">Workspace</div>
+      <button class="sb-item active" data-page="dashboard" onclick="nav('dashboard',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        Dashboard
+      </button>
+      <button class="sb-item" data-page="contacts" onclick="nav('contacts',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        All Contacts
+        <span class="sb-badge" id="sb-count">0</span>
+      </button>
+      <button class="sb-item" data-page="add" onclick="nav('add',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="16" y1="11" x2="22" y2="11"/></svg>
+        Add Contact
+      </button>
+    </div>
+    <div class="sb-section">
+      <div class="sb-label">Views</div>
+      <button class="sb-item" data-page="priority" onclick="nav('priority',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Priority
+      </button>
+      <button class="sb-item" data-page="followups" onclick="nav('followups',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        Follow-Ups
+      </button>
+      <button class="sb-item" data-page="calendar" onclick="nav('calendar',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Calendar
+      </button>
+    </div>
+    <div class="sb-section">
+      <div class="sb-label">Resources</div>
+      <button class="sb-item" data-page="companies" onclick="nav('companies',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="20" height="15" rx="1"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+        Companies
+      </button>
+      <button class="sb-item" data-page="templates" onclick="nav('templates',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
+        Templates
+      </button>
+      <button class="sb-item" data-page="insights" onclick="nav('insights',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+        Insights
+      </button>
+    </div>
+    <div class="sb-footer">
+      <div class="sb-footer-text">PGDM · Outreach Tracker<br>Start strong. Stay consistent.</div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <div id="main">
+    <div id="topbar">
+      <span id="page-title">Dashboard</span>
+      <button class="tb-btn" onclick="exportCSV()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export CSV
+      </button>
+      <button class="tb-btn tb-primary" onclick="nav('add',document.querySelector('[data-page=add]'))">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Contact
+      </button>
+    </div>
+
+    <div id="content">
+
+      <!-- DASHBOARD -->
+      <div class="page active" id="page-dashboard">
+        <div class="dash-hero">
+          <div class="dash-eyebrow">Career Command Centre</div>
+          <div class="dash-title"><strong>Strategic Networking CRM</strong></div>
+          <div class="dash-sub">"Building meaningful professional relationships, opportunities, and strategic visibility."</div>
+        </div>
+        <div class="metrics-row">
+          <div class="metric" onclick="nav('contacts',document.querySelector('[data-page=contacts]'))">
+            <div class="metric-label">Total Contacts</div>
+            <div class="metric-val" id="m-total">0</div>
+            <div class="metric-sub">in your network</div>
+          </div>
+          <div class="metric metric-accent" onclick="nav('priority',document.querySelector('[data-page=priority]'))">
+            <div class="metric-label">High Priority</div>
+            <div class="metric-val" id="m-high">0</div>
+            <div class="metric-sub">connections</div>
+          </div>
+          <div class="metric" onclick="nav('followups',document.querySelector('[data-page=followups]'))">
+            <div class="metric-label">Follow-Ups Due</div>
+            <div class="metric-val" id="m-fu">0</div>
+            <div class="metric-sub">this week</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Response Rate</div>
+            <div class="metric-val" id="m-resp">—</div>
+            <div class="metric-sub">of outreached</div>
+          </div>
+        </div>
+        <div class="qa-section">
+          <div class="section-label">Quick Actions</div>
+          <div class="qa-grid">
+            <button class="qa-card" onclick="nav('add',document.querySelector('[data-page=add]'))">
+              <div class="qa-icon">＋</div>
+              <div class="qa-name">Add Contact</div>
+              <div class="qa-desc">Log a new person</div>
+            </button>
+            <button class="qa-card" onclick="nav('templates',document.querySelector('[data-page=templates]'))">
+              <div class="qa-icon">✉</div>
+              <div class="qa-name">Outreach Templates</div>
+              <div class="qa-desc">Copy & send</div>
+            </button>
+            <button class="qa-card" onclick="nav('followups',document.querySelector('[data-page=followups]'))">
+              <div class="qa-icon">◷</div>
+              <div class="qa-name">Follow-Up Queue</div>
+              <div class="qa-desc">Who's waiting?</div>
+            </button>
+            <button class="qa-card" onclick="nav('insights',document.querySelector('[data-page=insights]'))">
+              <div class="qa-icon">◈</div>
+              <div class="qa-name">Insights Journal</div>
+              <div class="qa-desc">Add a learning</div>
+            </button>
+          </div>
+        </div>
+        <div class="dash-two-col">
+          <div class="dash-panel">
+            <div class="dash-panel-header">
+              <span class="dash-panel-title">Upcoming Follow-Ups</span>
+              <span class="dash-panel-link" onclick="nav('followups',document.querySelector('[data-page=followups]'))">View all →</span>
+            </div>
+            <div class="dash-panel-body" id="dash-fu"></div>
+          </div>
+          <div class="dash-panel">
+            <div class="dash-panel-header">
+              <span class="dash-panel-title">Priority Connections</span>
+              <span class="dash-panel-link" onclick="nav('priority',document.querySelector('[data-page=priority]'))">View all →</span>
+            </div>
+            <div class="dash-panel-body" id="dash-priority"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ALL CONTACTS -->
+      <div class="page" id="page-contacts">
+        <div class="page-header"><h2>Master Contacts</h2><p>Every professional in your network</p></div>
+        <div class="toolbar">
+          <div class="search-wrap">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input class="search-input" id="c-search" placeholder="Search name, company, role..." oninput="renderContacts()">
+          </div>
+          <select class="filter-select" id="c-fstatus" onchange="renderContacts()">
+            <option value="">All Statuses</option>
+            <option>Connected</option><option>Following</option><option>Not Connected</option><option>Replied</option><option>Strong Connection</option>
+          </select>
+          <select class="filter-select" id="c-fpriority" onchange="renderContacts()">
+            <option value="">All Priorities</option>
+            <option>High</option><option>Medium</option><option>Low</option>
+          </select>
+        </div>
+        <div class="view-tabs">
+          <button class="vtab active" onclick="setCtView('all',this)">All</button>
+          <button class="vtab" onclick="setCtView('mentor',this)">Mentors & Alumni</button>
+          <button class="vtab" onclick="setCtView('recruiter',this)">Recruiters & HR</button>
+          <button class="vtab" onclick="setCtView('consulting',this)">Consulting</button>
+        </div>
+        <div class="table-wrap"><div class="table-scroll">
+          <table class="crm-table">
+            <thead><tr>
+              <th>Name</th><th>Company</th><th>Role</th><th>Industry</th>
+              <th>Status</th><th>Priority</th><th>Response</th><th>Follow-Up</th><th>Interaction</th>
+            </tr></thead>
+            <tbody id="c-tbody"></tbody>
+          </table>
+        </div></div>
+        <div id="c-empty" class="empty" style="display:none"><div class="empty-icon">○</div><div class="empty-text">No contacts yet — add your first connection above.</div></div>
+      </div>
+
+      <!-- ADD CONTACT -->
+      <div class="page" id="page-add">
+        <div class="page-header"><h2 id="form-h2">Add New Contact</h2><p>Log a professional in your network</p></div>
+        <div class="form-wrap">
+          <input type="hidden" id="edit-id">
+          <div class="form-grid">
+            <div class="form-group"><label class="form-label">Full Name *</label><input class="form-input" id="f-name" placeholder="e.g. Priya Mehta"></div>
+            <div class="form-group"><label class="form-label">Company</label><input class="form-input" id="f-company" placeholder="e.g. McKinsey & Company"></div>
+            <div class="form-group"><label class="form-label">Current Role</label><input class="form-input" id="f-role" placeholder="e.g. Senior Consultant"></div>
+            <div class="form-group"><label class="form-label">Industry</label><input class="form-input" id="f-industry" placeholder="e.g. Consulting, Finance, Tech"></div>
+            <div class="form-group full"><label class="form-label">LinkedIn Profile URL</label><input class="form-input" id="f-linkedin" placeholder="https://linkedin.com/in/..."></div>
+            <hr class="form-section-sep"><div class="form-section-title">Status & Priority</div>
+            <div class="form-group"><label class="form-label">Connection Status</label>
+              <select class="form-select" id="f-status"><option>Not Connected</option><option>Following</option><option>Connected</option><option>Replied</option><option>Strong Connection</option></select>
+            </div>
+            <div class="form-group"><label class="form-label">Priority Level</label>
+              <select class="form-select" id="f-priority"><option>Medium</option><option>High</option><option>Low</option></select>
+            </div>
+            <div class="form-group"><label class="form-label">Interaction Level</label>
+              <select class="form-select" id="f-interaction"><option>None</option><option>Liked Posts</option><option>Commented</option><option>DM Sent</option><option>Conversation Done</option><option>Call Scheduled</option></select>
+            </div>
+            <div class="form-group"><label class="form-label">Response Status</label>
+              <select class="form-select" id="f-response"><option>Pending</option><option>Replied</option><option>No Response</option><option>Follow-Up Required</option></select>
+            </div>
+            <hr class="form-section-sep"><div class="form-section-title">Dates & Potential</div>
+            <div class="form-group"><label class="form-label">Date Outreach Sent</label><input class="form-input" id="f-datesent" type="date"></div>
+            <div class="form-group"><label class="form-label">Follow-Up Date</label><input class="form-input" id="f-followup" type="date"></div>
+            <div class="form-group"><label class="form-label">Potential Benefit</label>
+              <select class="form-select" id="f-benefit"><option value="">Select...</option><option>Mentorship</option><option>Alumni Network</option><option>Referral</option><option>Job Opportunity</option><option>Industry Insights</option><option>Mock Interview</option></select>
+            </div>
+            <div class="form-group"><label class="form-label">Referral Potential</label>
+              <select class="form-select" id="f-referral"><option>Unknown</option><option>High</option><option>Medium</option><option>Low</option></select>
+            </div>
+            <hr class="form-section-sep"><div class="form-section-title">Notes & Context</div>
+            <div class="form-group full"><label class="form-label">Common Ground / Context</label><input class="form-input" id="f-common" placeholder="e.g. Same college, met at XLRI event, mutual connection"></div>
+            <div class="form-group full"><label class="form-label">Outreach Message Sent</label><textarea class="form-textarea" id="f-message" placeholder="Paste the message you sent..."></textarea></div>
+            <div class="form-group full"><label class="form-label">Notes</label><textarea class="form-textarea" id="f-notes" placeholder="Key things discussed, personality, follow-up points..."></textarea></div>
+            <div class="form-group full"><label class="form-label">Last Insight / Takeaway</label><input class="form-input" id="f-insight" placeholder="e.g. Recommended learning SQL, values proactive outreach"></div>
+            <div class="form-group"><label class="form-label">Last Interaction Date</label><input class="form-input" id="f-lastdate" type="date"></div>
+            <div class="form-group"><label class="form-label">Warm-Up Actions Taken</label><input class="form-input" id="f-warmup" placeholder="e.g. Liked 3 posts, commented on article"></div>
+          </div>
+          <div class="form-actions">
+            <button class="tb-btn" onclick="resetForm()">Cancel</button>
+            <button class="tb-btn tb-primary" onclick="saveContact()">Save Contact</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRIORITY -->
+      <div class="page" id="page-priority">
+        <div class="page-header"><h2>Priority Connections</h2><p>High-value relationships requiring active attention</p></div>
+        <div class="table-wrap"><div class="table-scroll">
+          <table class="crm-table">
+            <thead><tr><th>Name</th><th>Company</th><th>Role</th><th>Priority</th><th>Status</th><th>Benefit</th><th>Follow-Up</th></tr></thead>
+            <tbody id="pr-tbody"></tbody>
+          </table>
+        </div></div>
+        <div id="pr-empty" class="empty" style="display:none"><div class="empty-icon">◇</div><div class="empty-text">No high priority contacts yet.</div></div>
+      </div>
+
+      <!-- FOLLOW-UPS -->
+      <div class="page" id="page-followups">
+        <div class="page-header"><h2>Follow-Up Queue</h2><p>Contacts waiting for reconnection</p></div>
+        <div class="view-tabs">
+          <button class="vtab active" onclick="setFuView('all',this)">All Pending</button>
+          <button class="vtab" onclick="setFuView('week',this)">This Week</button>
+          <button class="vtab" onclick="setFuView('overdue',this)">Overdue</button>
+        </div>
+        <div class="table-wrap"><div class="table-scroll">
+          <table class="crm-table">
+            <thead><tr><th>Name</th><th>Company</th><th>Follow-Up Date</th><th>Response</th><th>Priority</th><th>Notes</th></tr></thead>
+            <tbody id="fu-tbody"></tbody>
+          </table>
+        </div></div>
+        <div id="fu-empty" class="empty" style="display:none"><div class="empty-icon">✓</div><div class="empty-text">No follow-ups scheduled — you're clear.</div></div>
+      </div>
+
+      <!-- CALENDAR -->
+      <div class="page" id="page-calendar">
+        <div class="page-header"><h2>Follow-Up Calendar</h2><p>Visualise your reconnection schedule</p></div>
+        <div class="cal-nav">
+          <button class="tb-btn" onclick="prevMonth()">← Prev</button>
+          <span class="cal-month" id="cal-title"></span>
+          <button class="tb-btn" onclick="nextMonth()">Next →</button>
+        </div>
+        <div class="cal-grid" id="cal-grid"></div>
+      </div>
+
+      <!-- COMPANIES -->
+      <div class="page" id="page-companies">
+        <div class="page-header"><h2>Dream & Target Companies</h2><p>Track target organisations and your progress</p></div>
+        <div style="display:flex;gap:10px;align-items:center;margin-bottom:14px">
+          <button class="tb-btn tb-primary" onclick="toggleCoForm()">+ Add Company</button>
+        </div>
+        <div id="co-form" style="display:none;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin-bottom:18px;max-width:680px">
+          <div class="form-grid">
+            <div class="form-group"><label class="form-label">Company Name</label><input class="form-input" id="co-name" placeholder="e.g. Bain & Company"></div>
+            <div class="form-group"><label class="form-label">Industry</label><input class="form-input" id="co-industry" placeholder="e.g. Consulting"></div>
+            <div class="form-group"><label class="form-label">Dream Role</label><input class="form-input" id="co-role" placeholder="e.g. Strategy Analyst"></div>
+            <div class="form-group"><label class="form-label">Priority</label>
+              <select class="form-select" id="co-priority"><option>High</option><option>Medium</option><option>Low</option></select>
+            </div>
+            <div class="form-group"><label class="form-label">Application Status</label>
+              <select class="form-select" id="co-appstatus"><option>Researching</option><option>Applied</option><option>Interviewing</option><option>Offer</option><option>Rejected</option></select>
+            </div>
+            <div class="form-group"><label class="form-label">Hiring Status</label>
+              <select class="form-select" id="co-hirstatus"><option>Unknown</option><option>Actively Hiring</option><option>Not Hiring</option><option>Off-Campus</option></select>
+            </div>
+            <div class="form-group full"><label class="form-label">Why This Company</label><input class="form-input" id="co-why" placeholder="Your reason for targeting this company"></div>
+            <div class="form-group full"><label class="form-label">Skills Needed</label><input class="form-input" id="co-skills" placeholder="e.g. Excel, SQL, case frameworks"></div>
+          </div>
+          <div class="form-actions"><button class="tb-btn" onclick="toggleCoForm()">Cancel</button><button class="tb-btn tb-primary" onclick="saveCompany()">Save Company</button></div>
+        </div>
+        <div class="view-tabs">
+          <button class="vtab active" onclick="setCoView('all',this)">All</button>
+          <button class="vtab" onclick="setCoView('dream',this)">Dream (High Priority)</button>
+          <button class="vtab" onclick="setCoView('applied',this)">In Progress</button>
+        </div>
+        <div class="company-grid" id="co-cards"></div>
+        <div id="co-empty" class="empty" style="display:none"><div class="empty-icon">◻</div><div class="empty-text">No companies added yet.</div></div>
+      </div>
+
+      <!-- TEMPLATES -->
+      <div class="page" id="page-templates">
+        <div class="page-header"><h2>Outreach Templates</h2><p>Expand, personalise the bracketed fields, and send</p></div>
+        <div id="tmpl-list"></div>
+      </div>
+
+      <!-- INSIGHTS -->
+      <div class="page" id="page-insights">
+        <div class="page-header"><h2>Insights Journal</h2><p>Your private strategic intelligence from conversations and observations</p></div>
+        <div class="insights-grid" id="insights-grid"></div>
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;max-width:680px">
+          <div class="form-label" style="margin-bottom:10px">Add new insight</div>
+          <div style="display:flex;gap:10px;align-items:center">
+            <select class="filter-select" id="ins-cat" style="width:180px">
+              <option>Recruiter Advice</option><option>Conversation Lesson</option><option>Skills Recommended</option><option>Interview Insight</option><option>Pattern Noticed</option>
+            </select>
+            <input class="form-input" id="ins-text" placeholder="Write your insight here..." style="flex:1" onkeydown="if(event.key==='Enter')addInsight()">
+            <button class="tb-btn tb-primary" onclick="addInsight()">Add</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end #content -->
+
+    <!-- DETAIL PANEL -->
+    <div id="detail">
+      <div class="detail-inner" id="detail-inner"></div>
+      <button class="detail-close-btn" onclick="closeDetail()" title="Close">✕</button>
+    </div>
+  </div><!-- end #main -->
+</div>
+
+<div id="toast"></div>
+
+<script>
+// DATA
+let contacts = JSON.parse(localStorage.getItem('crm_v2_contacts')||'[]');
+let companies = JSON.parse(localStorage.getItem('crm_v2_companies')||'[]');
+let insights = JSON.parse(localStorage.getItem('crm_v2_insights')||'[]');
+
+let ctView='all', fuView='all', coView='all';
+let calMonth=new Date().getMonth(), calYear=new Date().getFullYear();
+
+const AVATARCOLORS=[
+  {bg:'#162130',c:'#5b9bd5'},{bg:'#162a1f',c:'#4caf7d'},{bg:'#2a2318',c:'#c8a96e'},
+  {bg:'#2a1515',c:'#e05c5c'},{bg:'#1a1630',c:'#9b8fd4'},{bg:'#162028',c:'#4bbfbf'}
+];
+function acolor(n){let h=0;for(let x of n)h+=x.charCodeAt(0);return AVATARCOLORS[h%AVATARCOLORS.length]}
+function ini(n){const p=n.trim().split(' ');return(p[0][0]+(p[1]?p[1][0]:'')).toUpperCase()}
+function save(){
+  localStorage.setItem('crm_v2_contacts',JSON.stringify(contacts));
+  localStorage.setItem('crm_v2_companies',JSON.stringify(companies));
+  localStorage.setItem('crm_v2_insights',JSON.stringify(insights));
+}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',2200)}
+
+// NAV
+function nav(page, el){
+  document.querySelectorAll('.sb-item').forEach(b=>b.classList.remove('active'));
+  if(el) el.classList.add('active');
+  else {const t=document.querySelector(`.sb-item[data-page="${page}"]`);if(t)t.classList.add('active');}
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  const T={dashboard:'Dashboard',contacts:'Master Contacts',add:'Add New Contact',priority:'Priority Connections',followups:'Follow-Up Queue',calendar:'Follow-Up Calendar',companies:'Target Companies',templates:'Outreach Templates',insights:'Insights Journal'};
+  document.getElementById('page-title').textContent=T[page]||page;
+  closeDetail();
+  if(page==='dashboard') renderDash();
+  if(page==='contacts') renderContacts();
+  if(page==='priority') renderPriority();
+  if(page==='followups') renderFollowUps();
+  if(page==='calendar') renderCalendar();
+  if(page==='companies') renderCompanies();
+  if(page==='insights') renderInsights();
+}
+
+// PILLS
+function sp(s){const m={'Connected':'pill-connected','Following':'pill-following','Not Connected':'pill-notconn','Replied':'pill-replied','Strong Connection':'pill-strong'};return`<span class="pill ${m[s]||'pill-noresp'}">${s||'—'}</span>`}
+function pp(p){const m={'High':'pill-high','Medium':'pill-medium','Low':'pill-low'};return`<span class="pill ${m[p]||'pill-low'}">${p||'—'}</span>`}
+function rp(r){const m={'Replied':'pill-replied','Pending':'pill-pending','No Response':'pill-noresp','Follow-Up Required':'pill-fureq'};return`<span class="pill ${m[r]||'pill-noresp'}">${r||'—'}</span>`}
+
+// DASHBOARD
+function renderDash(){
+  document.getElementById('sb-count').textContent=contacts.length;
+  const today=new Date();today.setHours(0,0,0,0);
+  const in7=new Date(today);in7.setDate(today.getDate()+7);
+  const high=contacts.filter(c=>c.priority==='High');
+  const sent=contacts.filter(c=>c.datesent);
+  const replied=contacts.filter(c=>c.response==='Replied');
+  const fuDue=contacts.filter(c=>{if(!c.followup)return false;const d=new Date(c.followup);return d>=today&&d<=in7});
+  document.getElementById('m-total').textContent=contacts.length;
+  document.getElementById('m-high').textContent=high.length;
+  document.getElementById('m-fu').textContent=fuDue.length;
+  document.getElementById('m-resp').textContent=sent.length?Math.round(replied.length/sent.length*100)+'%':'—';
+
+  const fuEl=document.getElementById('dash-fu');
+  if(!fuDue.length){fuEl.innerHTML='<div class="empty" style="padding:20px"><div class="empty-icon" style="font-size:20px">✓</div><div class="empty-text">No follow-ups due this week.</div></div>'}
+  else fuEl.innerHTML=fuDue.slice(0,5).map(c=>{
+    const ac=acolor(c.name);
+    const d=new Date(c.followup);const diff=Math.round((d-today)/86400000);
+    const when=diff===0?'Today':diff===1?'Tomorrow':`In ${diff}d`;
+    return`<div class="dash-row" onclick="openDetail('${c.id}')">
+      <div class="avatar" style="background:${ac.bg};color:${ac.c}">${ini(c.name)}</div>
+      <div><div class="dash-row-name">${c.name}</div><div class="dash-row-sub">${c.company||''}${c.role?' · '+c.role:''}</div></div>
+      <div class="dash-row-right"><span style="font-size:11px;color:var(--text3)">${when}</span>${rp(c.response)}</div>
+    </div>`}).join('');
+
+  const prEl=document.getElementById('dash-priority');
+  if(!high.length){prEl.innerHTML='<div class="empty" style="padding:20px"><div class="empty-icon" style="font-size:20px">◇</div><div class="empty-text">Add priority contacts to see them here.</div></div>'}
+  else prEl.innerHTML=high.slice(0,5).map(c=>{
+    const ac=acolor(c.name);
+    return`<div class="dash-row" onclick="openDetail('${c.id}')">
+      <div class="avatar" style="background:${ac.bg};color:${ac.c}">${ini(c.name)}</div>
+      <div><div class="dash-row-name">${c.name}</div><div class="dash-row-sub">${c.company||''}${c.role?' · '+c.role:''}</div></div>
+      <div class="dash-row-right">${sp(c.status)}</div>
+    </div>`}).join('');
+}
+
+// CONTACTS
+function getCt(){
+  const q=(document.getElementById('c-search')?.value||'').toLowerCase();
+  const fs=document.getElementById('c-fstatus')?.value||'';
+  const fp=document.getElementById('c-fpriority')?.value||'';
+  return contacts.filter(c=>{
+    if(q&&!`${c.name} ${c.company} ${c.role} ${c.industry}`.toLowerCase().includes(q))return false;
+    if(fs&&c.status!==fs)return false;
+    if(fp&&c.priority!==fp)return false;
+    if(ctView==='mentor'&&!['Mentorship','Alumni Network'].includes(c.benefit))return false;
+    if(ctView==='recruiter'&&!/hr|recruit/i.test(c.role))return false;
+    if(ctView==='consulting'&&!/consult|strateg/i.test(c.industry+' '+c.role))return false;
+    return true;
+  });
+}
+function renderContacts(){
+  const list=getCt();
+  const tbody=document.getElementById('c-tbody');
+  const empty=document.getElementById('c-empty');
+  document.getElementById('sb-count').textContent=contacts.length;
+  if(!list.length){tbody.innerHTML='';empty.style.display='block';return}
+  empty.style.display='none';
+  tbody.innerHTML=list.map(c=>`<tr onclick="openDetail('${c.id}')">
+    <td>${c.name}</td><td>${c.company||'—'}</td><td>${c.role||'—'}</td><td>${c.industry||'—'}</td>
+    <td>${sp(c.status)}</td><td>${pp(c.priority)}</td><td>${rp(c.response)}</td>
+    <td style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text3)">${c.followup||'—'}</td>
+    <td style="font-size:11px;color:var(--text3)">${c.interaction||'—'}</td>
+  </tr>`).join('');
+}
+function setCtView(v,el){ctView=v;document.querySelectorAll('#page-contacts .vtab').forEach(t=>t.classList.remove('active'));el.classList.add('active');renderContacts()}
+
+// PRIORITY
+function renderPriority(){
+  const high=contacts.filter(c=>c.priority==='High');
+  const tbody=document.getElementById('pr-tbody');
+  const empty=document.getElementById('pr-empty');
+  if(!high.length){tbody.innerHTML='';empty.style.display='block';return}
+  empty.style.display='none';
+  tbody.innerHTML=high.map(c=>`<tr onclick="openDetail('${c.id}')">
+    <td>${c.name}</td><td>${c.company||'—'}</td><td>${c.role||'—'}</td>
+    <td>${pp(c.priority)}</td><td>${sp(c.status)}</td>
+    <td style="font-size:11px;color:var(--text3)">${c.benefit||'—'}</td>
+    <td style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text3)">${c.followup||'—'}</td>
+  </tr>`).join('');
+}
+
+// FOLLOW-UPS
+function setFuView(v,el){fuView=v;document.querySelectorAll('#page-followups .vtab').forEach(t=>t.classList.remove('active'));el.classList.add('active');renderFollowUps()}
+function renderFollowUps(){
+  const today=new Date();today.setHours(0,0,0,0);
+  const in7=new Date(today);in7.setDate(today.getDate()+7);
+  let list=contacts.filter(c=>c.followup||c.response==='Follow-Up Required'||c.response==='Pending');
+  if(fuView==='week')list=list.filter(c=>{if(!c.followup)return false;const d=new Date(c.followup);return d>=today&&d<=in7});
+  if(fuView==='overdue')list=list.filter(c=>{if(!c.followup)return false;return new Date(c.followup)<today});
+  list.sort((a,b)=>a.followup>b.followup?1:-1);
+  const tbody=document.getElementById('fu-tbody');
+  const empty=document.getElementById('fu-empty');
+  if(!list.length){tbody.innerHTML='';empty.style.display='block';return}
+  empty.style.display='none';
+  tbody.innerHTML=list.map(c=>`<tr onclick="openDetail('${c.id}')">
+    <td>${c.name}</td><td>${c.company||'—'}</td>
+    <td style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text3)">${c.followup||'—'}</td>
+    <td>${rp(c.response)}</td><td>${pp(c.priority)}</td>
+    <td style="font-size:11px;color:var(--text3);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${c.notes||'—'}</td>
+  </tr>`).join('');
+}
+
+// CALENDAR
+function renderCalendar(){
+  const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  document.getElementById('cal-title').textContent=`${MONTHS[calMonth]} ${calYear}`;
+  const today=new Date();today.setHours(0,0,0,0);
+  const fuMap={};
+  contacts.forEach(c=>{if(c.followup){if(!fuMap[c.followup])fuMap[c.followup]=[];fuMap[c.followup].push(c.name)}});
+  let html=DAYS.map(d=>`<div class="cal-day-label">${d}</div>`).join('');
+  const first=new Date(calYear,calMonth,1).getDay();
+  const days=new Date(calYear,calMonth+1,0).getDate();
+  const prev=new Date(calYear,calMonth,0).getDate();
+  for(let i=0;i<first;i++)html+=`<div class="cal-cell other"><div class="cal-num">${prev-first+i+1}</div></div>`;
+  for(let d=1;d<=days;d++){
+    const key=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const dt=new Date(calYear,calMonth,d);dt.setHours(0,0,0,0);
+    const isT=dt.getTime()===today.getTime();
+    const evs=fuMap[key]||[];
+    html+=`<div class="cal-cell${isT?' today':''}"><div class="cal-num">${d}</div>${evs.map(n=>`<div class="cal-event" title="${n}">${n.split(' ')[0]}</div>`).join('')}</div>`;
+  }
+  const rem=(7-((first+days)%7))%7;
+  for(let i=1;i<=rem;i++)html+=`<div class="cal-cell other"><div class="cal-num">${i}</div></div>`;
+  document.getElementById('cal-grid').innerHTML=html;
+}
+function prevMonth(){calMonth--;if(calMonth<0){calMonth=11;calYear--}renderCalendar()}
+function nextMonth(){calMonth++;if(calMonth>11){calMonth=0;calYear++}renderCalendar()}
+
+// COMPANIES
+function setCoView(v,el){coView=v;document.querySelectorAll('#page-companies .vtab').forEach(t=>t.classList.remove('active'));el.classList.add('active');renderCompanies()}
+function toggleCoForm(){const f=document.getElementById('co-form');f.style.display=f.style.display==='none'?'block':'none'}
+function saveCompany(){
+  const c={id:Date.now().toString(),name:document.getElementById('co-name').value.trim(),industry:document.getElementById('co-industry').value.trim(),role:document.getElementById('co-role').value.trim(),priority:document.getElementById('co-priority').value,appstatus:document.getElementById('co-appstatus').value,hirstatus:document.getElementById('co-hirstatus').value,why:document.getElementById('co-why').value.trim(),skills:document.getElementById('co-skills').value.trim()};
+  if(!c.name){alert('Company name required');return}
+  companies.push(c);save();toggleCoForm();
+  ['co-name','co-industry','co-role','co-why','co-skills'].forEach(id=>document.getElementById(id).value='');
+  renderCompanies();toast('Company saved ✓')
+}
+function renderCompanies(){
+  let list=companies;
+  if(coView==='dream')list=companies.filter(c=>c.priority==='High');
+  if(coView==='applied')list=companies.filter(c=>['Applied','Interviewing','Offer'].includes(c.appstatus));
+  const el=document.getElementById('co-cards');
+  const empty=document.getElementById('co-empty');
+  if(!list.length){el.innerHTML='';empty.style.display='block';return}
+  empty.style.display='none';
+  el.innerHTML=list.map(c=>`<div class="co-card">
+    <div class="co-top"><div class="co-name">${c.name}</div>${pp(c.priority)}</div>
+    <div class="co-role">${c.industry||''}${c.role?' · '+c.role:''}</div>
+    <div class="co-tags"><span class="pill pill-medium">${c.appstatus||'Researching'}</span><span class="pill pill-noresp">${c.hirstatus||'Unknown'}</span></div>
+    ${c.why?`<div class="co-why">${c.why}</div>`:''}
+    ${c.skills?`<div style="font-size:11px;color:var(--text3);margin-top:6px">Skills needed: ${c.skills}</div>`:''}
+  </div>`).join('');
+}
+
+// TEMPLATES
+const TEMPLATES=[
+  {title:'Cold Outreach — Industry Professional',tag:'LinkedIn DM',body:`Hi [Name],
+
+I came across your profile while researching [Company / Industry] and was genuinely impressed by your trajectory at [Company].
+
+I'm currently a PGDM student at [Institute], building a career in [field]. I'd love to get 15 minutes of your time to understand your journey and hear any advice you'd offer someone just starting out.
+
+Would you be open to a brief chat this week or next?
+
+Thank you for considering this.
+
+Best regards,
+Atul Raj Prasad`},
+  {title:'Alumni Outreach — Warm Connection',tag:'LinkedIn DM',body:`Hi [Name],
+
+I noticed we're both connected to [Institute / College] — always great to come across a fellow alumnus.
+
+I'm currently in my PGDM at [Institute] and am keenly interested in [field / role]. I've been following your career at [Company] and would love to hear about your transition from campus to industry.
+
+Would you have 15–20 minutes for a call at your convenience?
+
+Thank you,
+Atul Raj Prasad`},
+  {title:'Referral Request — After Building Rapport',tag:'LinkedIn DM / Email',body:`Hi [Name],
+
+Thank you again for our conversation last [week / month] — your insights on [topic] were genuinely valuable and I've been acting on them.
+
+I noticed that [Company] is looking for a [Role], which aligns closely with my background in [skill / domain]. I was wondering if you'd be comfortable referring me or pointing me toward the right person on the recruiting team.
+
+I understand this is a significant ask — please do say no if it doesn't feel right. Either way, I deeply value the connection we've built.
+
+Warm regards,
+Atul Raj Prasad`},
+  {title:'Follow-Up After No Response',tag:'Follow-Up',body:`Hi [Name],
+
+I wanted to follow up on my earlier message — completely understand if things have been busy.
+
+If you'd have even 10 minutes at some point, I'd still love to hear about your experience at [Company]. If now isn't the right time, I'm happy to reconnect whenever suits you.
+
+Thank you for your time.
+
+Best,
+Atul Raj Prasad`},
+  {title:'Thank You After a Call',tag:'Post-Conversation',body:`Hi [Name],
+
+Thank you so much for taking the time to speak with me today. It was one of the most insightful conversations I've had — your perspective on [specific topic] gave me a great deal to reflect on.
+
+I'll be working on [action you committed to] and would love to share an update with you down the line.
+
+Thank you again for your generosity with your time.
+
+Warm regards,
+Atul Raj Prasad`},
+  {title:'Networking Request — No Specific Agenda',tag:'Networking',body:`Hi [Name],
+
+I've been following your work at [Company] and find your perspective on [topic] particularly thoughtful.
+
+I'm a PGDM student with a serious interest in [field] — no specific ask, just genuinely curious about your path and what you're currently working on.
+
+Would a 15-minute informal chat work at any point this month?
+
+Thank you,
+Atul Raj Prasad`}
+];
+
+function renderTemplates(){
+  document.getElementById('tmpl-list').innerHTML=TEMPLATES.map((t,i)=>`
+    <div class="tmpl-item">
+      <div class="tmpl-header" id="tmpl-h-${i}" onclick="toggleTmpl(${i})">
+        <div class="tmpl-header-left">
+          <span class="tmpl-title">${t.title}</span>
+          <span class="pill pill-medium" style="margin-left:8px">${t.tag}</span>
+        </div>
+        <svg class="tmpl-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="tmpl-body" id="tmpl-b-${i}">
+        <pre class="tmpl-text">${t.body}</pre>
+        <button class="tb-btn" id="tmpl-copy-${i}" onclick="copyTmpl(${i})">Copy to clipboard</button>
+      </div>
+    </div>`).join('');
+}
+function toggleTmpl(i){
+  const b=document.getElementById('tmpl-b-'+i);
+  const h=document.getElementById('tmpl-h-'+i);
+  const open=b.classList.toggle('open');
+  h.classList.toggle('open',open);
+}
+function copyTmpl(i){
+  navigator.clipboard.writeText(TEMPLATES[i].body).then(()=>{
+    const btn=document.getElementById('tmpl-copy-'+i);
+    btn.textContent='Copied ✓';
+    setTimeout(()=>btn.textContent='Copy to clipboard',2000);
+  });
+}
+
+// INSIGHTS
+const INSCATS=['Recruiter Advice','Conversation Lesson','Skills Recommended','Interview Insight','Pattern Noticed'];
+const INSCOLORS=['#c8a96e','#5b9bd5','#4caf7d','#9b8fd4','#e09f3e'];
+const INSDEFAULT=[
+  {id:'d1',cat:'Recruiter Advice',text:'Always send a personalised connection note — generic requests are often ignored.'},
+  {id:'d2',cat:'Conversation Lesson',text:'Ask about their career journey, not just advice — people love sharing their story.'},
+  {id:'d3',cat:'Skills Recommended',text:'SQL and Excel are consistently mentioned across consulting and analytics roles.'},
+  {id:'d4',cat:'Pattern Noticed',text:'Most professionals respond best on Tuesday–Thursday mornings.'},
+  {id:'d5',cat:'Interview Insight',text:'Structured storytelling (STAR method) is expected — practice it before calls.'},
+];
+if(!insights.length){insights=[...INSDEFAULT];save()}
+function renderInsights(){
+  const bycat={};
+  INSCATS.forEach(c=>bycat[c]=[]);
+  insights.forEach(i=>{if(bycat[i.cat])bycat[i.cat].push(i)});
+  document.getElementById('insights-grid').innerHTML=INSCATS.map((cat,ci)=>`
+    <div class="insight-card">
+      <div class="insight-card-header">
+        <div class="insight-dot" style="background:${INSCOLORS[ci]}"></div>
+        <div class="insight-card-title">${cat}</div>
+      </div>
+      <div class="insight-entries">
+        ${bycat[cat].map(i=>`<div class="insight-entry">
+          <div class="insight-entry-text">${i.text}</div>
+          <button class="insight-rm" onclick="removeInsight('${i.id}')" title="Remove">✕</button>
+        </div>`).join('')}
+        ${!bycat[cat].length?`<div style="padding:10px 16px;font-size:12px;color:var(--text3)">No entries yet.</div>`:''}
+      </div>
+    </div>`).join('');
+}
+function addInsight(){
+  const cat=document.getElementById('ins-cat').value;
+  const text=document.getElementById('ins-text').value.trim();
+  if(!text)return;
+  insights.push({id:'i'+Date.now(),cat,text});
+  document.getElementById('ins-text').value='';
+  save();renderInsights();toast('Insight added ✓')
+}
+function removeInsight(id){insights=insights.filter(i=>i.id!==id);save();renderInsights()}
+
+// FORM
+function saveContact(){
+  const id=document.getElementById('edit-id').value||Date.now().toString();
+  const c={
+    id,name:document.getElementById('f-name').value.trim(),
+    company:document.getElementById('f-company').value.trim(),
+    role:document.getElementById('f-role').value.trim(),
+    industry:document.getElementById('f-industry').value.trim(),
+    linkedin:document.getElementById('f-linkedin').value.trim(),
+    status:document.getElementById('f-status').value,
+    priority:document.getElementById('f-priority').value,
+    interaction:document.getElementById('f-interaction').value,
+    response:document.getElementById('f-response').value,
+    datesent:document.getElementById('f-datesent').value,
+    followup:document.getElementById('f-followup').value,
+    benefit:document.getElementById('f-benefit').value,
+    referral:document.getElementById('f-referral').value,
+    common:document.getElementById('f-common').value.trim(),
+    message:document.getElementById('f-message').value.trim(),
+    notes:document.getElementById('f-notes').value.trim(),
+    insight:document.getElementById('f-insight').value.trim(),
+    lastdate:document.getElementById('f-lastdate').value,
+    warmup:document.getElementById('f-warmup').value.trim()
+  };
+  if(!c.name){alert('Name is required');return}
+  const idx=contacts.findIndex(x=>x.id===id);
+  if(idx>=0)contacts[idx]=c;else contacts.push(c);
+  save();resetForm();
+  nav('contacts',document.querySelector('[data-page=contacts]'));
+  toast('Contact saved ✓')
+}
+function resetForm(){
+  ['f-name','f-company','f-role','f-industry','f-linkedin','f-common','f-message','f-notes','f-insight','f-warmup'].forEach(id=>document.getElementById(id).value='');
+  ['f-datesent','f-followup','f-lastdate'].forEach(id=>document.getElementById(id).value='');
+  ['f-status','f-priority','f-interaction','f-response','f-benefit','f-referral'].forEach(id=>document.getElementById(id).selectedIndex=0);
+  document.getElementById('edit-id').value='';
+  document.getElementById('form-h2').textContent='Add New Contact';
+}
+
+// DETAIL
+function openDetail(id){
+  const c=contacts.find(x=>x.id===id);if(!c)return;
+  const ac=acolor(c.name);
+  const field=(label,val,mono)=>val?`<div class="d-field"><div class="d-field-label">${label}</div><div class="d-field-val"${mono?' style="font-family:DM Mono,monospace;font-size:12px"':''}>${val}</div></div>`:'';
+  document.getElementById('detail-inner').innerHTML=`
+    <div class="d-avatar" style="background:${ac.bg};color:${ac.c}">${ini(c.name)}</div>
+    <div class="d-name">${c.name}</div>
+    <div class="d-role">${c.role||''}${c.company?' · '+c.company:''}</div>
+    <div class="d-pills">${pp(c.priority)}${sp(c.status)}${rp(c.response)}</div>
+    <hr class="d-sep">
+    ${field('Industry',c.industry)}${field('Interaction Level',c.interaction)}${field('Potential Benefit',c.benefit)}${field('Referral Potential',c.referral)}
+    <hr class="d-sep">
+    ${field('Date Sent',c.datesent,true)}${field('Follow-Up Date',c.followup,true)}${field('Last Interaction',c.lastdate,true)}
+    <hr class="d-sep">
+    ${c.linkedin?`<div class="d-field"><div class="d-field-label">LinkedIn</div><a href="${c.linkedin}" target="_blank" style="font-size:13px;color:var(--accent)">View Profile ↗</a></div>`:''}
+    ${field('Common Ground',c.common)}
+    ${c.notes?`<div class="d-field"><div class="d-field-label">Notes</div><div class="d-field-val" style="white-space:pre-wrap">${c.notes}</div></div>`:''}
+    ${field('Last Insight',c.insight)}${field('Warm-Up Actions',c.warmup)}
+    <hr class="d-sep">
+    <div class="d-actions">
+      <button class="tb-btn" style="flex:1" onclick="editContact('${c.id}')">Edit</button>
+      <button class="tb-btn" style="color:var(--red);border-color:var(--red-dim)" onclick="deleteContact('${c.id}')">Delete</button>
+    </div>`;
+  document.getElementById('detail').classList.add('open');
+}
+function closeDetail(){document.getElementById('detail').classList.remove('open')}
+function editContact(id){
+  const c=contacts.find(x=>x.id===id);if(!c)return;
+  closeDetail();nav('add',document.querySelector('[data-page=add]'));
+  document.getElementById('form-h2').textContent='Edit Contact';
+  document.getElementById('edit-id').value=c.id;
+  ['name','company','role','industry','linkedin','common','message','notes','insight','warmup','datesent','followup','lastdate'].forEach(k=>{const el=document.getElementById('f-'+k);if(el)el.value=c[k]||''});
+  ['status','priority','interaction','response','benefit','referral'].forEach(k=>{const el=document.getElementById('f-'+k);if(el)el.value=c[k]||''});
+}
+function deleteContact(id){
+  if(!confirm('Delete this contact?'))return;
+  contacts=contacts.filter(c=>c.id!==id);save();closeDetail();renderContacts();renderDash();toast('Contact removed')
+}
+
+// EXPORT
+function exportCSV(){
+  if(!contacts.length){toast('No contacts to export');return}
+  const H=['Name','Company','Role','Industry','LinkedIn','Status','Priority','Interaction','Response','Date Sent','Follow-Up','Benefit','Referral','Common Ground','Notes','Last Insight','Last Interaction','Warm-Up'];
+  const K=['name','company','role','industry','linkedin','status','priority','interaction','response','datesent','followup','benefit','referral','common','notes','insight','lastdate','warmup'];
+  const csv=[H.join(','),...contacts.map(c=>K.map(k=>`"${(c[k]||'').replace(/"/g,'""')}"`).join(','))].join('\n');
+  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download='networking_crm_atul.csv';a.click();toast('CSV exported ✓')
+}
+
+// INIT
+renderTemplates();
+renderDash();
+</script>
+</body>
+</html>
