@@ -64,7 +64,7 @@ https://atulprasad98.github.io/Networking-CRM/
 
 # 📷 Project Preview
 
-(Add screenshot here later)
+<img width="1913" height="1077" alt="CRM_Screenshot" src="https://github.com/user-attachments/assets/21346f60-315b-422c-921a-9916237566e8" />
 
 ---
 
